@@ -2,8 +2,7 @@ import { authkit } from "@workos-inc/authkit-nextjs";
 import { NextRequest, NextResponse } from "next/server";
 import { getOrganisationSignInUrl } from "./lib/auth";
 
-const protectedRoutes = ["/", "/dashboard"];
-const routes = [...protectedRoutes, "/dashboard/:path*", "/api/:path*"];
+const routes = ["/:path*"];
 
 export default async function middleware(request: NextRequest) {
   // Skip auth for WorkOS callback routes
@@ -15,11 +14,7 @@ export default async function middleware(request: NextRequest) {
     debug: process.env.NODE_ENV === "development",
   });
 
-  const isProtectedRoute = protectedRoutes.some((route) =>
-    request.nextUrl.pathname.startsWith(route)
-  );
-
-  if (isProtectedRoute && !session.user) {
+  if (!session.user) {
     // Get hostname from request
     const hostname = request.headers.get("host") || "";
 
