@@ -1,4 +1,4 @@
-import { Home } from "lucide-react";
+import { Home, User } from "lucide-react";
 
 import {
   Sidebar,
@@ -15,16 +15,34 @@ import {
 import { Suspense } from "react";
 import OrganisationDetails from "./OrganisationDetails";
 import UserDetails from "./UserDetails";
+import Link from "next/link";
+import { withAuth } from "@workos-inc/authkit-nextjs";
+import { Role } from "@/lib/roles";
 
-const items = [
+interface Item {
+  title: string;
+  url: string;
+  icon: React.ElementType;
+  roles: Role[];
+}
+
+const items: Item[] = [
   {
     title: "Home",
     url: "/",
     icon: Home,
+    roles: ["admin", "employee", "hr", "senior-hr"],
+  },
+  {
+    title: "Manage Users",
+    url: "/users",
+    icon: User,
+    roles: ["admin"],
   },
 ];
 
-export function AppSidebar() {
+export async function AppSidebar() {
+  const { role } = await withAuth();
   return (
     <Sidebar>
       <SidebarHeader>
@@ -34,19 +52,22 @@ export function AppSidebar() {
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Application</SidebarGroupLabel>
+          <SidebarGroupLabel>Routes</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <a href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </a>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {items.map(
+                (item) =>
+                  item.roles.includes(role as Role) && (
+                    <SidebarMenuItem key={item.title}>
+                      <SidebarMenuButton asChild>
+                        <Link href={item.url}>
+                          <item.icon />
+                          <span>{item.title}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  )
+              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
