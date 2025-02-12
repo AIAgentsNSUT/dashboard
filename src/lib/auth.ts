@@ -1,5 +1,8 @@
 "use server";
-import { getSignInUrl } from "@workos-inc/authkit-nextjs";
+import {
+  getSignInUrl,
+  signOut as signOutFunc,
+} from "@workos-inc/authkit-nextjs";
 
 // TODO: Implement Redis and Mongo DB here
 const getOrganisationSignInUrl = async (hostname: string) => {
@@ -8,4 +11,8 @@ const getOrganisationSignInUrl = async (hostname: string) => {
   });
 };
 
-export { getOrganisationSignInUrl };
+const signOut = async () => {
+  return await signOutFunc({ returnTo: "/" });
+};
+
+export { getOrganisationSignInUrl, signOut };
