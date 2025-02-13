@@ -8,18 +8,18 @@ const CACHE_EXPIRY = 60 * 60 * 24; // 24 hours
 
 async function cacheOrganisation(org: IOrganisation) {
   try {
-    // Redis caching
-    const pipeline = redis.pipeline();
+    // Create a multi command (pipeline equivalent in node-redis)
+    const multi = redis.multi();
 
-    pipeline.set(`org:hostname:${org.hostname}`, org.workosId, {
-      ex: CACHE_EXPIRY,
-    });
+    multi.setEx(`org:hostname:${org.hostname}`, CACHE_EXPIRY, org.workosId);
 
-    pipeline.set(`org:workos:${org.workosId}`, JSON.stringify(org), {
-      ex: CACHE_EXPIRY,
-    });
+    multi.setEx(
+      `org:workos:${org.workosId}`,
+      CACHE_EXPIRY,
+      JSON.stringify(org)
+    );
 
-    await pipeline.exec();
+    await multi.exec();
   } catch (error) {
     console.error("Error in cacheOrganisation:", error);
   }
@@ -30,12 +30,13 @@ export async function getOrganisationByHostname(
 ): Promise<IOrganisation | null> {
   try {
     // First get the workosId from hostname mapping
-    const workosId = await redis.get<string>(`org:hostname:${hostname}`);
+    const workosId = await redis.get(`org:hostname:${hostname}`);
     if (workosId) {
       // If not in cookies, check Redis
-      const org = await redis.get<IOrganisation>(`org:workos:${workosId}`);
-      if (org) {
-        // Update cookies and return
+      const orgStr = await redis.get(`org:workos:${workosId}`);
+      if (orgStr) {
+        const org = JSON.parse(orgStr) as IOrganisation;
+        // Update cache and return
         await cacheOrganisation(org);
         return org;
       }
@@ -62,11 +63,12 @@ export async function getOrganisationByWorkOSId(
 ): Promise<IOrganisation | null> {
   try {
     // Check Redis
-    const cachedOrg = await redis.get<IOrganisation>(`org:workos:${workosId}`);
-    if (cachedOrg) {
-      // Update cookies and return
-      await cacheOrganisation(cachedOrg);
-      return cachedOrg;
+    const orgStr = await redis.get(`org:workos:${workosId}`);
+    if (orgStr) {
+      const org = JSON.parse(orgStr) as IOrganisation;
+      // Update cache and return
+      await cacheOrganisation(org);
+      return org;
     }
 
     // If not in Redis, check MongoDB

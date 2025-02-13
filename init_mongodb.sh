@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# Load environment variables from .env file if it exists
+if [ -f .env ]; then
+    export $(cat .env | grep -v '#' | sed 's/\r$//' | awk '/=/ {print $1}')
+fi
+
+# Get user input for hostname
+read -p "Enter the hostname (default: localhost:3000): " hostname
+hostname=${hostname:-localhost:3000}
+read -p "Enter the workosId (default: ${WORKOS_TEST_ORG_ID}): " workosId
+workosId=${workosId:-$WORKOS_TEST_ORG_ID}
+
+# Create the organization using mongosh
+docker-compose exec -T mongodb mongosh -u "${MONGO_ROOT_USERNAME}" -p "${MONGO_ROOT_PASSWORD}" --eval '
+  // Switch to admin to authenticate
+  db = db.getSiblingDB("admin");
+  db.auth("'"${MONGO_ROOT_USERNAME}"'", "'"${MONGO_ROOT_PASSWORD}"'");
+
+  // Switch to and create database
+  db = db.getSiblingDB("'"${MONGO_DATABASE}"'");
+  
+  // Create a test collection to ensure database exists
+  if (!db.getCollectionNames().includes("organisations")) {
+    db.createCollection("organisations");
+  }
+  db.organisations.insertOne({
+    "name": "Google",
+    "hostname": "'"${hostname}"'",
+    "workosId": "'"${workosId}"'",
+    "website": "https://www.google.com/",
+    "logo": "data:image/jpeg;base64,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"
+  });
+'
+
+echo "Organization created in database ${MONGO_DATABASE} with hostname: ${hostname} and workosId: ${workosId}"

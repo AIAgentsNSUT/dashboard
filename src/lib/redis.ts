@@ -1,12 +1,17 @@
-import { Redis } from "@upstash/redis";
+// lib/redis.ts
+import { createClient } from "redis";
 
-if (!process.env.REDIS_URL || !process.env.REDIS_TOKEN) {
-  throw new Error("Redis environment variables are not set");
+if (!process.env.REDIS_URL) {
+  throw new Error("Redis URL is not set");
 }
 
-const redis = new Redis({
-  url: process.env.REDIS_URL,
-  token: process.env.REDIS_TOKEN,
+const redis = createClient({
+  url: process.env.REDIS_URL || "redis://localhost:6379",
 });
+
+redis.on("error", (err) => console.error("Redis Client Error", err));
+
+// Connect to Redis
+await redis.connect();
 
 export default redis;

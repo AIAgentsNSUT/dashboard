@@ -17,7 +17,6 @@ const OrganisationSchema = new mongoose.Schema<IOrganisation>(
       type: String,
       required: true,
       trim: true,
-      unique: true,
     },
     hostname: {
       type: String,
