@@ -1,24 +1,38 @@
-// TODO: OrganisationDetails
-// import { withAuth } from "@workos-inc/authkit-nextjs";
 import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Skeleton } from "../ui/skeleton";
+import { withAuth } from "@workos-inc/authkit-nextjs";
+import { getOrganisationByWorkOSId } from "@/server/organisation";
 
-export default async function OrganisationDetails() {
-  // const { organizationId } = await withAuth();
-  // if (!organizationId) throw new Error("No organizationId");
+export async function OrganisationDetails() {
+  const { organizationId } = await withAuth();
+  if (!organizationId) throw new Error("No organizationId");
 
+  const org = await getOrganisationByWorkOSId(organizationId);
+  if (!org) throw new Error("No organisation found");
   return (
     <a
-      href="https://www.youtube.com/"
+      href={org.website}
       target="_blank"
       className="bg-sidebar-accent flex items-center gap-4 p-2 rounded-md"
     >
-      <Avatar>
-        <AvatarImage src="https://placehold.co/50" />
-        <AvatarFallback>Org</AvatarFallback>
+      <Avatar className="w-[40px] h-[40px]">
+        {/* Todo Implement CDN URL Here */}
+        <AvatarImage src={org.logo} />
+        <AvatarFallback>{org.name[0]}</AvatarFallback>
       </Avatar>
 
-      <h1 className="">Organisation Name</h1>
+      <h1>{org.name}</h1>
     </a>
+  );
+}
+
+export function OrganisationDetailsSkeleton() {
+  return (
+    <div className="bg-sidebar-accent flex items-center gap-4 p-2 rounded-md">
+      <Skeleton className="min-w-[40px] h-[40px] aspect-square rounded-full" />
+
+      <Skeleton className="w-full h-[40px] rounded-md" />
+    </div>
   );
 }

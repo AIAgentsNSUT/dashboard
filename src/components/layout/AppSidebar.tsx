@@ -1,4 +1,4 @@
-import { Home, User } from "lucide-react";
+import { Construction, Home, User } from "lucide-react";
 
 import {
   Sidebar,
@@ -13,7 +13,10 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { Suspense } from "react";
-import OrganisationDetails from "./OrganisationDetails";
+import {
+  OrganisationDetails,
+  OrganisationDetailsSkeleton,
+} from "./OrganisationDetails";
 import UserDetails from "./UserDetails";
 import Link from "next/link";
 import { withAuth } from "@workos-inc/authkit-nextjs";
@@ -34,6 +37,12 @@ const items: Item[] = [
     roles: ["admin", "employee", "hr", "senior-hr"],
   },
   {
+    title: "Jobs",
+    url: "/jobs",
+    icon: Construction,
+    roles: ["admin", "employee", "hr", "senior-hr"],
+  },
+  {
     title: "Manage Users",
     url: "/users",
     icon: User,
@@ -46,13 +55,12 @@ export async function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader>
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<OrganisationDetailsSkeleton />}>
           <OrganisationDetails />
         </Suspense>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Routes</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map(

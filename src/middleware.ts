@@ -13,14 +13,12 @@ export default async function middleware(request: NextRequest) {
   const { session, headers } = await authkit(request, {
     debug: process.env.NODE_ENV === "development",
   });
-
   if (!session.user) {
     // Get hostname from request
     const hostname = request.headers.get("host") || "";
 
     try {
       const signInURL = await getOrganisationSignInUrl(hostname);
-      console.log(hostname);
       if (!signInURL) {
         return new NextResponse("Organization not found", { status: 404 });
       }
