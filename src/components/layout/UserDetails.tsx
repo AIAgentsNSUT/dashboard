@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
-import { rolesMapping } from "@/lib/roles";
+import { rolesMapping } from "@/lib/data";
 import { Button } from "../ui/button";
 import { LogOutIcon } from "lucide-react";
 import { signOut } from "@/lib/auth";
