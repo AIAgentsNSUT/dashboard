@@ -20,13 +20,12 @@ import {
 import UserDetails from "./UserDetails";
 import Link from "next/link";
 import { withAuth } from "@workos-inc/authkit-nextjs";
-import { Role } from "@/lib/roles";
 
 interface Item {
   title: string;
   url: string;
   icon: React.ElementType;
-  roles: Role[];
+  roles: UserRole[];
 }
 
 const items: Item[] = [
@@ -65,7 +64,7 @@ export async function AppSidebar() {
             <SidebarMenu>
               {items.map(
                 (item) =>
-                  item.roles.includes(role as Role) && (
+                  item.roles.includes(role as UserRole) && (
                     <SidebarMenuItem key={item.title}>
                       <SidebarMenuButton asChild>
                         <Link href={item.url}>

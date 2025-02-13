@@ -1,8 +1,6 @@
-export const rolesMapping = {
+export const rolesMapping: { [key in UserRole]: string } = {
   hr: "Human Resources",
   "senior-hr": "Senior Human Resources",
   employee: "Employee",
   admin: "Admin",
 };
-
-export type Role = keyof typeof rolesMapping;

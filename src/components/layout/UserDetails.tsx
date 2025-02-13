@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
-import { Role, rolesMapping } from "@/lib/roles";
+import { rolesMapping } from "@/lib/roles";
 import { Button } from "../ui/button";
 import { LogOutIcon } from "lucide-react";
 import { signOut } from "@/lib/auth";
@@ -49,7 +49,7 @@ export default async function UserDetails() {
               {user.email}
             </p>
             <Badge className="text-xs md:text-sm truncate">
-              {role ? rolesMapping[role as Role] : "No role assigned"}
+              {role ? rolesMapping[role as UserRole] : "No role assigned"}
             </Badge>
           </div>
         </DropdownMenuLabel>
