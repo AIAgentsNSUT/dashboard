@@ -1,4 +1,3 @@
-// lib/redis.ts
 import { createClient } from "redis";
 
 if (!process.env.REDIS_URL) {
@@ -11,7 +10,6 @@ const redis = createClient({
 
 redis.on("error", (err) => console.error("Redis Client Error", err));
 
-// Connect to Redis
 await redis.connect();
 
 export default redis;

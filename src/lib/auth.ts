@@ -1,4 +1,5 @@
 "use server";
+import { getOrganisationByHostname } from "@/server/organisation";
 import {
   getSignInUrl,
   signOut as signOutFunc,
@@ -6,8 +7,12 @@ import {
 
 // TODO: Implement Redis and Mongo DB here
 const getOrganisationSignInUrl = async (hostname: string) => {
+  const org = await getOrganisationByHostname(hostname);
+  if (!org) {
+    throw new Error("Organisation not found");
+  }
   return await getSignInUrl({
-    organizationId: "org_01JKT4XCE5JXNXPH6NXN5Y8AAN",
+    organizationId: org.workosId,
   });
 };
 
