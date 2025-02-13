@@ -23,7 +23,7 @@ npm install
 1. Copy the environment example file:
 
 ```bash
-cp .env.example .env.local
+cp .env.example .env
 ```
 
 2. Configure WorkOS (Required for Authentication):
@@ -32,7 +32,7 @@ cp .env.example .env.local
    - Create a new workspace
    - Get your Client ID and API Key
    - Create a test organization
-   - Update `.env.local` with your WorkOS credentials:
+   - Update `.env` with your WorkOS credentials:
    - Add the redirect uri in the redirects tab
      ```
      WORKOS_CLIENT_ID=<your-client-id>
@@ -43,7 +43,7 @@ cp .env.example .env.local
      ```
 
 3. Database Configuration:
-   - The default configuration in `.env.local` should work for local development:
+   - The default configuration in `.env` should work for local development:
      ```
      MONGO_ROOT_USERNAME=admin
      MONGO_ROOT_PASSWORD=password123

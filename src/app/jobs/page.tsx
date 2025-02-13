@@ -5,9 +5,10 @@ import React from "react";
 
 export default async function page() {
   const { user, permissions, role } = await withAuth();
+
   return (
     <div>
-      {permissions?.includes("jobs:create") ?? (
+      {permissions?.includes("jobs:create") && (
         <Button>
           <PlusCircleIcon />
           Create Job
