@@ -92,3 +92,20 @@ export async function getJob(id: string) {
     return { success: false, error: "Failed to get job" };
   }
 }
+
+export async function listJobs(organizationId: string, createdBy?: string) {
+  try {
+    if (!organizationId)
+      return { success: false, error: "No organization found" };
+    const org = await useOrgStore.getState().getOrgByWorkOSId(organizationId);
+    if (!org) return { success: false, error: "No organization found" };
+    await connectDB();
+    const filter: any = { org: org._id };
+    if (createdBy) filter["createdBy"] = createdBy;
+    const jobs = await Job.find(filter);
+    return { success: true, data: JSON.stringify(jobs) };
+  } catch (error) {
+    console.error("Error listing jobs:", error);
+    return { success: false, error: "Failed to list jobs" };
+  }
+}
