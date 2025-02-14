@@ -6,6 +6,7 @@ import { AppSidebar } from "@/components/layout/AppSidebar";
 import { Topbar } from "@/components/layout/Topbar";
 import { ThemeProvider } from "@/components/layout/ThemeProvider";
 import { QueryProvider } from "@/components/layout/QueryProvider";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: "Aether HR",
@@ -30,6 +31,7 @@ export default function RootLayout({
             <AuthKitProvider>
               <SidebarProvider>
                 <AppSidebar />
+                <Toaster />
                 <main className="w-full min-h-screen">
                   <Topbar />
                   <div className="px-6 py-3">{children}</div>
