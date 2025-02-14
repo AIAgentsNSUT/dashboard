@@ -2,13 +2,14 @@ import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "../ui/skeleton";
 import { withAuth } from "@workos-inc/authkit-nextjs";
-import { getOrganisationByWorkOSId } from "@/server/organisation";
+import useOrgStore from "@/server/organisation";
 
 export async function OrganisationDetails() {
   const { organizationId } = await withAuth();
   if (!organizationId) throw new Error("No organizationId");
 
-  const org = await getOrganisationByWorkOSId(organizationId);
+  const org = await useOrgStore.getState().getOrgByWorkOSId(organizationId);
+
   if (!org) throw new Error("No organisation found");
   return (
     <a

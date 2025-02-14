@@ -1,13 +1,14 @@
-"use server";
-import { getOrganisationByHostname } from "@/server/organisation";
+import "server-only";
+import useOrgStore from "@/server/organisation";
 import {
   getSignInUrl,
   signOut as signOutFunc,
 } from "@workos-inc/authkit-nextjs";
 
-// TODO: Implement Redis and Mongo DB here
 const getOrganisationSignInUrl = async (hostname: string) => {
-  const org = await getOrganisationByHostname(hostname);
+  "use server";
+  const org = await useOrgStore.getState().getOrgByHostname(hostname);
+
   if (!org) {
     throw new Error("Organisation not found");
   }
@@ -17,6 +18,7 @@ const getOrganisationSignInUrl = async (hostname: string) => {
 };
 
 const signOut = async () => {
+  "use server";
   return await signOutFunc({ returnTo: "/" });
 };
 
