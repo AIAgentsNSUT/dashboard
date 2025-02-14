@@ -1,5 +1,5 @@
 import { fileTypes } from "@/lib/data";
-import mongoose, { Document, Schema } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 export interface IFileAttachment {
   url: string;

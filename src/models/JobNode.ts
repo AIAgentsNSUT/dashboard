@@ -1,54 +1,43 @@
-import mongoose, { Schema } from "mongoose";
-import { IMessage } from "./Message";
-import { IAgentOutput } from "./AgentOutput";
-import { nodeTypes } from "@/lib/data";
+import { Schema } from "mongoose";
+import { AgentOutputSchema, IAgentOutput } from "./AgentOutput";
+import { IMessage, MessageSchema } from "./Message";
+import { agentStates } from "@/lib/data";
 
-type NodeData =
-  | {
-      type: "aiAgent";
-      agentId: string;
-      inputid: string;
-      agentVersion: number;
-      currentOutput: IAgentOutput;
-      originalOutput: IAgentOutput;
-      outputHistory: IAgentOutput[];
-    }
-  | { type: "discussion"; messages: IMessage[] }
-  | {
-      type: "approval";
-      requiredBy: string;
-      approved: boolean;
-      approvedBy?: string;
-      approvedAt?: Date;
-      comments: IMessage[];
-    }
-  | { type: "input"; inputText: string; enteredBy: string; timestamp: Date }
-  | { type: "fileAttachment"; fileId: mongoose.Types.ObjectId };
+interface NodeData {
+  status: AgentState;
+  agentId: string;
+  agentVersion: number;
+  output: IAgentOutput[];
+  messages: IMessage[];
+}
 
 export interface IJobNode {
   id: string;
-  type: NodeType;
   position: {
     x: number;
     y: number;
   };
-  data: NodeData | null;
+  data: NodeData;
 }
+
+const NodeDataSchema = new Schema({
+  status: { type: String, enum: agentStates, required: true },
+  agentId: { type: String, required: true },
+  agentVersion: { type: Number, required: true },
+  currentOutput: [AgentOutputSchema],
+  originalOutput: [AgentOutputSchema],
+  messages: [MessageSchema],
+});
 
 export const JobNodeSchema = new Schema<IJobNode>(
   {
     id: { type: String, required: true },
-    type: {
-      type: String,
-      enum: nodeTypes,
-      required: true,
-    },
     position: {
       x: { type: Number, required: true },
       y: { type: Number, required: true },
     },
     data: {
-      type: Schema.Types.Mixed,
+      type: NodeDataSchema,
       required: true,
     },
   },

@@ -19,8 +19,7 @@ export interface IAIAgent extends Document {
       description?: string;
       required: boolean;
     }[];
-    inputid: string;
-  }[];
+  };
   outputAgents: {
     agent: mongoose.Types.ObjectId;
     version: string;
@@ -40,34 +39,31 @@ const AIAgentSchema = new Schema<IAIAgent>(
       ref: "Organisation",
       default: null,
     },
-    inputs: [
-      {
-        agents: [
-          {
-            agent: {
-              type: mongoose.Schema.Types.ObjectId,
-              ref: "AIAgent",
-              required: true,
-            },
-            version: { type: String, required: true },
-            required: { type: Boolean, required: true },
+    inputs: {
+      agents: [
+        {
+          agent: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "AIAgent",
+            required: true,
           },
-        ],
-        files: [
-          {
-            type: {
-              type: String,
-              required: true,
-              enum: fileTypes,
-            },
-            label: { type: String, required: true },
-            description: { type: String },
-            required: { type: Boolean, required: true },
+          version: { type: String, required: true },
+          required: { type: Boolean, required: true },
+        },
+      ],
+      files: [
+        {
+          type: {
+            type: String,
+            required: true,
+            enum: fileTypes,
           },
-        ],
-        inputid: { type: String, required: true },
-      },
-    ],
+          label: { type: String, required: true },
+          description: { type: String },
+          required: { type: Boolean, required: true },
+        },
+      ],
+    },
     outputAgents: [
       {
         agent: {

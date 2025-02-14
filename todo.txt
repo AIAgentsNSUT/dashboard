@@ -1,2 +1,2 @@
 Job Invite Collaborators
-delete models and just use types no need to register multiple schemas in the db hence will need to edit create and update job functions
+Go through schema once more and fix everything that is wrong.

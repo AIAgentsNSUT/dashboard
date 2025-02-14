@@ -7,14 +7,13 @@ export const rolesMapping: { [key in UserRole]: string } = {
 
 export const outputTypes: OutputType[] = ["file", "json", "string"];
 export const fileTypes: FileType[] = ["image", "pdf", "doc", "mp4", "mp3"];
-export const nodeTypes: NodeType[] = [
-  "aiAgent",
-  "discussion",
-  "approval",
-  "input",
-  "fileAttachment",
+export const agentStates: AgentState[] = [
+  "error",
+  "idle",
+  "pending_approval",
+  "running",
+  "success",
 ];
-
 export const notificationTypes: NotificationType[] = [
   "collaboration",
   "approval",
