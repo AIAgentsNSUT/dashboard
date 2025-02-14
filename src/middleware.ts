@@ -1,7 +1,9 @@
 import { authkit } from "@workos-inc/authkit-nextjs";
 import { NextRequest, NextResponse } from "next/server";
 
-const routes = ["/:path*"];
+export const config = {
+  matcher: ["/:path*"],
+};
 
 export default async function middleware(request: NextRequest) {
   // Skip auth for WorkOS routes
@@ -14,7 +16,7 @@ export default async function middleware(request: NextRequest) {
   });
   if (!session.user) {
     const hostname = request.headers.get("host") || "";
-    const protocol = request.headers.get("x-forwarded-proto") || "http"; // Check for protocol
+    const protocol = request.headers.get("x-forwarded-proto") || "http";
     const absoluteUrl = `${protocol}://${hostname}/api/workos/redirect`;
     return NextResponse.redirect(absoluteUrl);
   }
@@ -23,5 +25,3 @@ export default async function middleware(request: NextRequest) {
     headers: headers,
   });
 }
-
-export const config = { matcher: routes };

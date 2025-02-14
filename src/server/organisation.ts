@@ -32,7 +32,6 @@ export async function getOrganisationByHostname(
     // First get the workosId from hostname mapping
     const workosId = await redis.get(`org:hostname:${hostname}`);
     if (workosId) {
-      // If not in cookies, check Redis
       const orgStr = await redis.get(`org:workos:${workosId}`);
       if (orgStr) {
         const org = JSON.parse(orgStr) as IOrganisation;
