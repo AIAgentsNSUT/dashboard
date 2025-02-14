@@ -32,7 +32,7 @@ export interface IJobNode {
     x: number;
     y: number;
   };
-  data: NodeData;
+  data: NodeData | null;
 }
 
 export const JobNodeSchema = new Schema<IJobNode>(

@@ -2,8 +2,8 @@ import mongoose, { Schema } from "mongoose";
 
 export interface IJobEdge {
   id: string;
-  source: mongoose.Types.ObjectId;
-  target: mongoose.Types.ObjectId;
+  source?: mongoose.Types.ObjectId;
+  target?: mongoose.Types.ObjectId;
   label?: string;
 }
 
@@ -13,12 +13,10 @@ export const JobEdgeSchema = new Schema<IJobEdge>(
     source: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "JobNode",
-      required: true,
     },
     target: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "JobNode",
-      required: true,
     },
     label: { type: String },
   },
