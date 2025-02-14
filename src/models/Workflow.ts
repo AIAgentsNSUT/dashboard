@@ -14,7 +14,3 @@ export const WorkflowSchema = new Schema(
   },
   { _id: false }
 );
-
-const Workflow =
-  mongoose.models.Workflow || mongoose.model("Workflow", WorkflowSchema);
-export default Workflow;

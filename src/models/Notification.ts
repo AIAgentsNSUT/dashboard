@@ -4,7 +4,7 @@ import mongoose, { Document, Schema } from "mongoose";
 export interface INotification extends Document {
   userId: string;
   job: mongoose.Types.ObjectId;
-  nodeId?: mongoose.Types.ObjectId;
+  nodeId?: string;
   message: string;
   type: NotificationType;
   status: NotificationStatus;
@@ -16,7 +16,7 @@ const NotificationSchema = new Schema<INotification>(
   {
     userId: { type: String, required: true },
     job: { type: mongoose.Schema.Types.ObjectId, ref: "Job", required: true },
-    nodeId: { type: mongoose.Schema.Types.ObjectId, ref: "JobNode" },
+    nodeId: { type: String },
     message: { type: String, required: true },
     type: {
       type: String,

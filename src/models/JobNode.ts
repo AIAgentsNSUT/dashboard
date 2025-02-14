@@ -11,7 +11,7 @@ type NodeData =
       agentVersion: number;
       currentOutput: IAgentOutput;
       originalOutput: IAgentOutput;
-      outputHistory: mongoose.Types.ObjectId[];
+      outputHistory: IAgentOutput[];
     }
   | { type: "discussion"; messages: IMessage[] }
   | {
@@ -54,7 +54,3 @@ export const JobNodeSchema = new Schema<IJobNode>(
   },
   { _id: false }
 );
-
-const JobNode =
-  mongoose.models.JobNode || mongoose.model<IJobNode>("JobNode", JobNodeSchema);
-export default JobNode;

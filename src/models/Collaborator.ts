@@ -11,8 +11,3 @@ export const CollaboratorSchema = new Schema<ICollaborator>({
   invitedAt: { type: Date, required: true, default: Date.now },
   acceptedAt: { type: Date },
 });
-
-const Collaborator =
-  mongoose.models.Collaborator ||
-  mongoose.model<ICollaborator>("Collaborator", CollaboratorSchema);
-export default Collaborator;

@@ -11,7 +11,7 @@ export interface IAgentOutput {
   timestamp: Date;
 }
 
-const AgentOutputSchema = new Schema<IAgentOutput>({
+export const AgentOutputSchema = new Schema<IAgentOutput>({
   outputType: {
     type: String,
     enum: outputTypes,
@@ -24,8 +24,3 @@ const AgentOutputSchema = new Schema<IAgentOutput>({
   editedAt: { type: Date },
   timestamp: { type: Date, default: Date.now },
 });
-
-const AgentOutput =
-  mongoose.models.AgentOutputSchema ||
-  mongoose.model<IAgentOutput>("AgentOutput", AgentOutputSchema);
-export default AgentOutput;

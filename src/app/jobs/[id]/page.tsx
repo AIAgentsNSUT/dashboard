@@ -18,6 +18,8 @@ export default async function page({ params }: PageProps) {
   }
   const job = JSON.parse(data.data!);
 
+  console.log(job);
+
   return (
     <div className="p-4 space-y-4">
       <div className="flex items-center justify-between">
