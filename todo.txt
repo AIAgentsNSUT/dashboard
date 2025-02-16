@@ -1,2 +1,38 @@
 Job Invite Collaborators
-Go through schema once more and fix everything that is wrong.
+Rethink DB Schema, lets give AI Agents Input Output a Schema or some id to identify
+AI Agent and AI Agent Data
+Ai Agent
+   - Input : AI Agent Data[]
+   - Output : AI Agent Data[]
+   - Version
+   - ID
+   - Name
+   - Description
+   - Organisation
+
+AI Agent Data
+   - ID
+   - Type: File, Text, JSON
+   - Data
+   - Orignal
+   - Edited
+   - Name
+   - Version
+   - Description
+   - Editable
+   - Edited By
+
+Job Node
+   - ID
+   - Agent Type
+   - Status
+   - Think more..................
+
+Job Edge
+   - ID
+   - source
+   - target
+
+Notification
+
+Messages

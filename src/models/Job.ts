@@ -1,6 +1,16 @@
 import mongoose, { Document, Schema } from "mongoose";
-import { CollaboratorSchema, ICollaborator } from "./Collaborator";
-import { IWorkflow, WorkflowSchema } from "./Workflow";
+
+interface ICollaborator {
+  userId: string;
+  invitedAt: Date;
+  acceptedAt?: Date;
+}
+
+const CollaboratorSchema = new Schema<ICollaborator>({
+  userId: { type: String, required: true },
+  invitedAt: { type: Date, required: true, default: Date.now },
+  acceptedAt: { type: Date },
+});
 
 export interface IJob extends Document {
   title: string;
@@ -8,7 +18,6 @@ export interface IJob extends Document {
   org: mongoose.Types.ObjectId;
   createdBy: string;
   collaborators: ICollaborator[];
-  workflow: IWorkflow;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -24,7 +33,6 @@ const JobSchema = new Schema<IJob>(
     },
     createdBy: { type: String, required: true },
     collaborators: [CollaboratorSchema],
-    workflow: WorkflowSchema,
   },
   { timestamps: true }
 );
