@@ -1,6 +1,79 @@
 import mongoose, { Document, Schema } from "mongoose";
 
-export interface ICollaborator {
+export interface IAgentRuntimeData extends Document {
+  agentDataId: mongoose.Types.ObjectId;
+  value: any;
+  originalValue: any;
+  edited: boolean;
+  editedBy?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const AgentRuntimeDataSchema = new Schema<IAgentRuntimeData>(
+  {
+    agentDataId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "AIAgentData",
+      required: true,
+    },
+    value: { type: Schema.Types.Mixed, required: true },
+    originalValue: { type: Schema.Types.Mixed, required: true },
+    edited: { type: Boolean, default: false },
+    editedBy: { type: String },
+  },
+  { timestamps: true }
+);
+
+export interface IJobNode extends Document {
+  nodeId: string;
+  agentId: mongoose.Types.ObjectId;
+  status: string;
+
+  runtimeData: IAgentRuntimeData[];
+  position: { x: number; y: number };
+}
+
+const JobNodeSchema = new Schema<IJobNode>(
+  {
+    nodeId: { type: String, required: true },
+    agentId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "AIAgent",
+      required: true,
+    },
+    status: {
+      type: String,
+      required: true,
+      enum: ["pending", "running", "completed", "failed"],
+    },
+    runtimeData: [AgentRuntimeDataSchema],
+    position: {
+      x: { type: Number, required: true },
+      y: { type: Number, required: true },
+    },
+  },
+  { timestamps: true }
+);
+
+export interface IJobEdge extends Document {
+  edgeId: string;
+  source: string;
+  target: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const JobEdgeSchema = new Schema<IJobEdge>(
+  {
+    edgeId: { type: String, required: true },
+    source: { type: String, required: true },
+    target: { type: String, required: true },
+  },
+  { timestamps: true }
+);
+
+export interface ICollaborator extends Document {
   userId: string;
   email: string;
   invitedAt: Date;
@@ -20,6 +93,10 @@ export interface IJob extends Document {
   org: mongoose.Types.ObjectId;
   createdBy: string;
   collaborators: ICollaborator[];
+  workflow: {
+    nodes: IJobNode[];
+    edges: IJobEdge[];
+  };
   createdAt: Date;
   updatedAt: Date;
 }
@@ -35,6 +112,10 @@ const JobSchema = new Schema<IJob>(
     },
     createdBy: { type: String, required: true },
     collaborators: [CollaboratorSchema],
+    workflow: {
+      nodes: [JobNodeSchema],
+      edges: [JobEdgeSchema],
+    },
   },
   { timestamps: true }
 );
