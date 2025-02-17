@@ -18,34 +18,33 @@ export default async function page() {
   const jobs = JSON.parse(data.data!) as IJob[];
 
   return (
-    <div className="container p-6">
-      <div className="flex justify-between items-center mb-6">
-        <div className="space-y-1">
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-col justify-between items-start gap-4">
+        <div className="flex items-center justify-between w-full">
           <h1 className="text-2xl font-bold">Jobs</h1>
-          <div className="flex gap-4 text-sm text-gray-600">
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-blue-500" />
-              Created by me
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-green-500" />
-              Collaborating
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-amber-500" />
-              Pending Invite
-            </div>
+          {permissions?.includes("jobs:create") && (
+            <Button asChild>
+              <Link href="/jobs/create" className="flex items-center gap-2">
+                <PlusCircleIcon className="w-4 h-4" />
+                Create Job
+              </Link>
+            </Button>
+          )}
+        </div>
+        <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm text-gray-600">
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-blue-500" />
+            Created by me
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-green-500" />
+            Collaborating
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-amber-500" />
+            Pending Invite
           </div>
         </div>
-
-        {permissions?.includes("jobs:create") && (
-          <Button asChild>
-            <Link href="/jobs/create" className="flex items-center gap-2">
-              <PlusCircleIcon className="w-4 h-4" />
-              Create Job
-            </Link>
-          </Button>
-        )}
       </div>
 
       <div className="grid gap-4">
