@@ -30,12 +30,14 @@ export default function RootLayout({
           >
             <AuthKitProvider>
               <SidebarProvider>
-                <AppSidebar />
+                <div className="flex h-screen w-full overflow-hidden">
+                  <AppSidebar />
+                  <main className="h-full w-full flex flex-col overflow-hidden">
+                    <Topbar />
+                    <div className="p-4 h-full overflow-hidden">{children}</div>
+                  </main>
+                </div>
                 <Toaster />
-                <main className="w-full min-h-screen">
-                  <Topbar />
-                  <div className="px-6 py-3">{children}</div>
-                </main>
               </SidebarProvider>
             </AuthKitProvider>
           </ThemeProvider>

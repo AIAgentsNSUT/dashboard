@@ -11,20 +11,20 @@ import {
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { cn } from "@/lib/utils";
 
 export function Topbar() {
   const { open } = useSidebar();
   const { setTheme } = useTheme();
 
   return (
-    <div className="flex justify-between items-center bg-sidebar-accent px-6 py-3">
+    <div className="sticky top-0 flex justify-between items-center bg-sidebar-accent px-6 py-3 -ml-3">
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
