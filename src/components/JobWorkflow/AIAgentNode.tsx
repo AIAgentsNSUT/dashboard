@@ -11,6 +11,7 @@ import {
 } from "../ui/card";
 
 interface AIAgentNodeProps {
+  id: string;
   data: {
     agent: IAIAgent;
     inputs: IAIAgentData[];
@@ -19,7 +20,7 @@ interface AIAgentNodeProps {
   };
 }
 
-export default function AIAgentNode({ data }: AIAgentNodeProps) {
+export default function AIAgentNode({ id: nodeId, data }: AIAgentNodeProps) {
   const { agent, inputs, outputs, status } = data;
 
   return (
@@ -55,7 +56,7 @@ export default function AIAgentNode({ data }: AIAgentNodeProps) {
               <Handle
                 type="target"
                 position={Position.Left}
-                id={`input-${input._id}`}
+                id={`input-${input._id}-${nodeId}`}
                 className="w-3 h-3 bg-gray-400"
                 style={{ left: -20 }}
                 data-type={`${input.identifier}-${input.version}`}
@@ -86,7 +87,7 @@ export default function AIAgentNode({ data }: AIAgentNodeProps) {
               <Handle
                 type="source"
                 position={Position.Right}
-                id={`output-${output._id}`}
+                id={`output-${output._id}-${nodeId}`}
                 className="w-3 h-3 bg-gray-400"
                 style={{ right: -20 }}
                 data-type={`${output.identifier}-${output.version}`}

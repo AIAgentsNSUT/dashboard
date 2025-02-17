@@ -26,8 +26,11 @@ const nodeTypes = {
   aiAgent: AIAgentNode,
 };
 
+let nodeCounter = 0;
+let edgeCounter = 0;
 // Helper function to generate unique IDs
-const getId = () => `node-${Date.now()}`;
+const getNodeId = () => `node-${nodeCounter++}`;
+const getEdgeId = () => `edge-${edgeCounter++}`;
 
 interface AIAgentsCanvasProps {
   job: IJob;
@@ -90,7 +93,7 @@ function AIAgentsCanvas({ job }: AIAgentsCanvasProps) {
         });
 
         const newNode = {
-          id: getId(),
+          id: getNodeId(),
           type: "aiAgent",
           position,
           data: {
@@ -117,36 +120,93 @@ function AIAgentsCanvas({ job }: AIAgentsCanvasProps) {
 
       if (!sourceNode || !targetNode) return;
 
-      // Temp Fix
+      // Cycle detection logic remains the same
+      const wouldCreateCycle = (
+        source: string,
+        target: string,
+        existingEdges: Edge[]
+      ): boolean => {
+        if (source === target) return true;
+        const outgoingEdges = existingEdges.filter(
+          (edge) => edge.source === target
+        );
+        return outgoingEdges.some(
+          (edge) =>
+            edge.target === source ||
+            wouldCreateCycle(source, edge.target, existingEdges)
+        );
+      };
+
+      if (wouldCreateCycle(params.source, params.target, edges)) {
+        console.warn("Cannot create connection: cycle detected");
+        return;
+      }
+
+      // Function to process handle identifiers
+      const getModifiedHandle = (handle: string | null | undefined) => {
+        if (!handle) return null;
+        const parts = handle.split("-");
+        if (parts.length > 2) {
+          parts.pop(); // Remove the last element
+          parts.pop(); // Remove the second last element
+        }
+        return parts.join("-");
+      };
+
+      // Get modified handles
+      const modifiedSourceHandle = getModifiedHandle(params.sourceHandle);
+      const modifiedTargetHandle = getModifiedHandle(params.targetHandle);
+
+      // Find source output
       // @ts-ignore
       const sourceOutput = sourceNode.data.outputs?.find(
         // @ts-ignore
-        (output) => `output-${output._id}` === params.sourceHandle
+        (output) => `output-${output._id}` === modifiedSourceHandle
       );
+
+      // Find target input
       // @ts-ignore
       const targetInput = targetNode.data.inputs?.find(
         // @ts-ignore
-        (input) => `input-${input._id}` === params.targetHandle
+        (input) => `input-${input._id}` === modifiedTargetHandle
       );
 
+      // Type compatibility check
       if (
-        sourceOutput &&
-        targetInput &&
-        sourceOutput.identifier === targetInput.identifier &&
-        sourceOutput.version === targetInput.version
+        !sourceOutput ||
+        !targetInput ||
+        sourceOutput.identifier !== targetInput.identifier ||
+        sourceOutput.version !== targetInput.version
       ) {
+        console.warn("Cannot create connection: incompatible types");
+        return;
+      }
+
+      // Check if the target input is already connected
+      const existingConnection = edges.find(
+        (edge) => edge.targetHandle === params.targetHandle
+      );
+
+      setEdges((eds) => {
+        // Remove existing connection if present
+        const filteredEdges = eds.filter(
+          (edge) => edge.targetHandle !== params.targetHandle
+        );
+
+        // Add new connection
         const newEdge: Edge = {
-          id: `edge-${Date.now()}`,
+          id: getEdgeId(),
           source: params.source,
           target: params.target,
           sourceHandle: params.sourceHandle,
           targetHandle: params.targetHandle,
           deletable: true,
         };
-        setEdges((eds) => [...eds, newEdge]);
-      }
+
+        return [...filteredEdges, newEdge];
+      });
     },
-    [nodes, setEdges]
+    [nodes, edges, setEdges]
   );
 
   if (!mounted) return null;
