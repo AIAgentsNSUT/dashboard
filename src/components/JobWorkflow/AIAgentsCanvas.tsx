@@ -1,40 +1,47 @@
 "use client";
-import { IJob } from "@/models/Job";
+
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
-  Background,
-  ColorMode,
-  Connection,
-  Controls,
-  Edge,
-  Node,
   ReactFlow,
   ReactFlowProvider,
+  useNodesState,
+  useEdgesState,
   useReactFlow,
+  Background,
+  Controls,
+  Connection,
+  Node,
+  Edge,
+  ColorMode,
 } from "@xyflow/react";
-import React, { useCallback, useEffect, useState } from "react";
-import AIAgentNode from "./AIAgentNode";
-import { IAIAgent } from "@/models/AIAgent";
 import { useTheme } from "next-themes";
 import "@xyflow/react/dist/style.css";
 
-export default function AIAgentsCanvasWrapper({ job }: { job: IJob }) {
-  return (
-    <ReactFlowProvider>
-      <AIAgentsCanvas job={job} />
-    </ReactFlowProvider>
-  );
-}
+import { IJob } from "@/models/Job";
+import { IAIAgent } from "@/models/AIAgent";
+import AIAgentNode from "./AIAgentNode";
+
+// Node types definition
+const nodeTypes = {
+  aiAgent: AIAgentNode,
+};
+
+// Helper function to generate unique IDs
+const getId = () => `node-${Date.now()}`;
 
 interface AIAgentsCanvasProps {
   job: IJob;
 }
-const AIAgentsCanvas: React.FC<AIAgentsCanvasProps> = ({ job }) => {
-  const [nodes, setNodes] = useState<Node[]>([]);
-  const [edges, setEdges] = useState<Edge[]>([]);
+
+function AIAgentsCanvas({ job }: AIAgentsCanvasProps) {
+  const reactFlowWrapper = useRef<HTMLDivElement>(null);
+  const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
   const { screenToFlowPosition } = useReactFlow();
   const [mounted, setMounted] = useState(false);
   const { theme } = useTheme();
 
+  // Initialize nodes and edges from job.workflow
   useEffect(() => {
     if (job.workflow) {
       const flowNodes = job.workflow.nodes.map((node) => ({
@@ -57,56 +64,60 @@ const AIAgentsCanvas: React.FC<AIAgentsCanvasProps> = ({ job }) => {
       setNodes(flowNodes);
       setEdges(flowEdges);
     }
-  }, [job]);
+  }, [job, setNodes, setEdges]);
 
   useEffect(() => {
     setMounted(true);
+  }, []);
+
+  const onDragOver = useCallback((event: React.DragEvent) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "move";
   }, []);
 
   const onDrop = useCallback(
     (event: React.DragEvent) => {
       event.preventDefault();
 
-      const agentData = JSON.parse(
-        event.dataTransfer.getData("application/reactflow")
-      ) as IAIAgent;
+      try {
+        const agentData = JSON.parse(
+          event.dataTransfer.getData("application/reactflow")
+        ) as IAIAgent;
 
-      const position = screenToFlowPosition({
-        x: event.clientX,
-        y: event.clientY,
-      });
+        const position = screenToFlowPosition({
+          x: event.clientX,
+          y: event.clientY,
+        });
 
-      const newNode = {
-        id: `node-${Date.now()}`,
-        type: "aiAgent",
-        position,
-        data: {
-          agent: agentData,
-          inputs: agentData.inputs,
-          outputs: agentData.outputs,
-          status: "pending",
-          runtimeData: [],
-        },
-      };
+        const newNode = {
+          id: getId(),
+          type: "aiAgent",
+          position,
+          data: {
+            agent: agentData,
+            inputs: agentData.inputs,
+            outputs: agentData.outputs,
+            status: "pending",
+            runtimeData: [],
+          },
+        };
 
-      setNodes((nds) => nds.concat(newNode));
+        setNodes((nds) => nds.concat(newNode));
+      } catch (error) {
+        console.error("Error creating new node:", error);
+      }
     },
-    [screenToFlowPosition]
+    [screenToFlowPosition, setNodes]
   );
+
   const onConnect = useCallback(
     (params: Connection) => {
-      // Get source and target nodes
-      const sourceNode = nodes.find(
-        (node) => node.id === params.source
-      ) as Node;
-      const targetNode = nodes.find(
-        (node) => node.id === params.target
-      ) as Node;
+      const sourceNode = nodes.find((node) => node.id === params.source);
+      const targetNode = nodes.find((node) => node.id === params.target);
 
       if (!sourceNode || !targetNode) return;
 
-      // Get the output and input data types
-      // TODO: This is a temporary solution. We need to improve this.
+      // Temp Fix
       // @ts-ignore
       const sourceOutput = sourceNode.data.outputs?.find(
         // @ts-ignore
@@ -118,7 +129,6 @@ const AIAgentsCanvas: React.FC<AIAgentsCanvasProps> = ({ job }) => {
         (input) => `input-${input._id}` === params.targetHandle
       );
 
-      // Check if the types match by identifier and version
       if (
         sourceOutput &&
         targetInput &&
@@ -131,31 +141,42 @@ const AIAgentsCanvas: React.FC<AIAgentsCanvasProps> = ({ job }) => {
           target: params.target,
           sourceHandle: params.sourceHandle,
           targetHandle: params.targetHandle,
+          deletable: true,
         };
         setEdges((eds) => [...eds, newEdge]);
       }
     },
-    [nodes]
+    [nodes, setEdges]
   );
-
-  const nodeTypes = {
-    aiAgent: AIAgentNode,
-  };
 
   if (!mounted) return null;
+
   return (
-    <ReactFlow
-      colorMode={theme as ColorMode}
-      nodes={nodes}
-      edges={edges}
-      onDrop={onDrop}
-      onConnect={onConnect}
-      onDragOver={(e) => e.preventDefault()}
-      nodeTypes={nodeTypes}
-      fitView
-    >
-      <Background />
-      <Controls />
-    </ReactFlow>
+    <div className="w-full h-full" ref={reactFlowWrapper}>
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        onConnect={onConnect}
+        onDrop={onDrop}
+        onDragOver={onDragOver}
+        nodeTypes={nodeTypes}
+        colorMode={theme as ColorMode}
+        fitView
+      >
+        <Background />
+        <Controls />
+      </ReactFlow>
+    </div>
   );
-};
+}
+
+// Wrapper component with ReactFlowProvider
+export default function AIAgentsCanvasWrapper({ job }: { job: IJob }) {
+  return (
+    <ReactFlowProvider>
+      <AIAgentsCanvas job={job} />
+    </ReactFlowProvider>
+  );
+}

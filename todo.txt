@@ -1,7 +1,5 @@
 - DB Schema for Notifications and Messages
-- Unable to Move Nodes, One Connection per handle
-- Delete Connections
-- Delete Nodes and Connections
+- One Connection per handle
 - Update these changes to database
 - Cycling Nodes not allowed
 - How to run AI Agents ? -> Something we need  to think
