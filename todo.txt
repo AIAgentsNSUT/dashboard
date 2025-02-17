@@ -3,3 +3,8 @@
 - Delete Connections
 - Delete Nodes and Connections
 - Update these changes to database
+- Cycling Nodes not allowed
+- How to run AI Agents ? -> Something we need  to think
+- Integrate the 2 AI Agents developed
+- Add Search and proper filtering in the AI Agents List Tab
+- Selecting AI Agents change the tab and show the AI Agent details

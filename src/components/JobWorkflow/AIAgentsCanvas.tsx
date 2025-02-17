@@ -15,6 +15,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import AIAgentNode from "./AIAgentNode";
 import { IAIAgent } from "@/models/AIAgent";
 import { useTheme } from "next-themes";
+import "@xyflow/react/dist/style.css";
 
 export default function AIAgentsCanvasWrapper({ job }: { job: IJob }) {
   return (

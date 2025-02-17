@@ -8,7 +8,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AIAgentsContent from "./AIAgentsContent";
 import AgentConfigContent from "./AgentConfigContent";
 import AIAgentsCanvas from "./AIAgentsCanvas";
-import "@xyflow/react/dist/style.css";
 import { connectDB } from "@/lib/db";
 import AIAgent from "@/models/AIAgent";
 
