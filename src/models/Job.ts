@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema } from "mongoose";
 
-export interface IAgentRuntimeData extends Document {
+export interface IAgentRuntimeData {
   agentDataId: mongoose.Types.ObjectId;
   value: any;
   originalValue: any;
@@ -25,7 +25,7 @@ const AgentRuntimeDataSchema = new Schema<IAgentRuntimeData>(
   { timestamps: true }
 );
 
-export interface IJobNode extends Document {
+export interface IJobNode {
   nodeId: string;
   agentId: mongoose.Types.ObjectId;
   status: string;
@@ -56,7 +56,7 @@ const JobNodeSchema = new Schema<IJobNode>(
   { timestamps: true }
 );
 
-export interface IJobEdge extends Document {
+export interface IJobEdge {
   edgeId: string;
   source: string;
   target: string;
@@ -73,7 +73,7 @@ const JobEdgeSchema = new Schema<IJobEdge>(
   { timestamps: true }
 );
 
-export interface ICollaborator extends Document {
+export interface ICollaborator {
   userId: string;
   email: string;
   invitedAt: Date;
