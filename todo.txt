@@ -1,4 +1,3 @@
-Job Invite Collaborators
 Rethink DB Schema, lets give AI Agents Input Output a Schema or some id to identify
 AI Agent and AI Agent Data
 Ai Agent

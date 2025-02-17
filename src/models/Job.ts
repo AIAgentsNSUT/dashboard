@@ -1,13 +1,15 @@
 import mongoose, { Document, Schema } from "mongoose";
 
-interface ICollaborator {
+export interface ICollaborator {
   userId: string;
+  email: string;
   invitedAt: Date;
   acceptedAt?: Date;
 }
 
 const CollaboratorSchema = new Schema<ICollaborator>({
   userId: { type: String, required: true },
+  email: { type: String, required: true },
   invitedAt: { type: Date, required: true, default: Date.now },
   acceptedAt: { type: Date },
 });
