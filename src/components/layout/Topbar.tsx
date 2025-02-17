@@ -24,7 +24,7 @@ export function Topbar() {
   const { setTheme } = useTheme();
 
   return (
-    <div className="sticky top-0 flex justify-between items-center bg-sidebar-accent px-6 py-3 -ml-3">
+    <div className="sticky top-0 flex justify-between items-center bg-sidebar-accent px-6 py-3">
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
