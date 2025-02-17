@@ -31,6 +31,7 @@ const AIAgentsCanvas: React.FC<AIAgentsCanvasProps> = ({ job }) => {
   const [nodes, setNodes] = useState<Node[]>([]);
   const [edges, setEdges] = useState<Edge[]>([]);
   const { screenToFlowPosition } = useReactFlow();
+  const [mounted, setMounted] = useState(false);
   const { theme } = useTheme();
 
   useEffect(() => {
@@ -56,6 +57,10 @@ const AIAgentsCanvas: React.FC<AIAgentsCanvasProps> = ({ job }) => {
       setEdges(flowEdges);
     }
   }, [job]);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const onDrop = useCallback(
     (event: React.DragEvent) => {
@@ -136,6 +141,7 @@ const AIAgentsCanvas: React.FC<AIAgentsCanvasProps> = ({ job }) => {
     aiAgent: AIAgentNode,
   };
 
+  if (!mounted) return null;
   return (
     <ReactFlow
       colorMode={theme as ColorMode}
